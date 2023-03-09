@@ -16,6 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.phinh.grocery.R;
+import com.example.phinh.grocery.Shopping.activities.ForgotPasswordActivity;
+import com.example.phinh.grocery.Shopping.activities.MainSellerActivity;
+import com.example.phinh.grocery.Shopping.activities.MainUserActivity;
+import com.example.phinh.grocery.Shopping.activities.PhoneActivity;
+import com.example.phinh.grocery.Shopping.activities.RegisterUserActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
