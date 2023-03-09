@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Cửa hàng tạp hóa</string>
+    <string name="duoctaoboi">Được tạo bởi @Nguyễn Vĩ Khang</string>
+    <string name="sodt">Mời bạn nhập số điện thoại</string>
+    <string name="sdt">sdt</string>
+    <string name="nhapsodt">Nhập số điện thoại vào đây!!</string>
+    <string name="khongnhanduocmaotp">Không nhận được mã! Gửi lại</string>
 </resources>

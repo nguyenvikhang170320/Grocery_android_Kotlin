@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true" >
-        
+        <activity android:name=".Shopping.activities.PhoneActivity" />
+        <activity android:name=".Shopping.activities.VerifyPhoneActivity" />
         <activity android:name=".Shopping.activities.AddPromotionCodeActivity" />
         <activity android:name=".Shopping.activities.PromotionCodesActivity" />
         <activity android:name=".Shopping.activities.SettingsActivity" />

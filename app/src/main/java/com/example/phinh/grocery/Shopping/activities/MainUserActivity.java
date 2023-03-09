@@ -74,7 +74,7 @@ public class MainUserActivity extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
         firebaseAuth = FirebaseAuth.getInstance();
         checkUser();
-
+        getDataIntent();// xử lý sự kiện truyền intent số điện thoại vào đây.
         //at start show shops ui
         showShopsUI();
 
@@ -111,6 +111,12 @@ public class MainUserActivity extends AppCompatActivity {
         //start settings screen
         settingsBtn.setOnClickListener(view -> startActivity(new Intent(MainUserActivity.this, SettingsActivity.class)));
 
+    }
+
+    private void getDataIntent() {
+        String mobile = getIntent().getStringExtra("mobile");
+        TextView textView = findViewById(R.id.phoneTv);
+        textView.setText(mobile);
     }
 
     private void showShopsUI() {
