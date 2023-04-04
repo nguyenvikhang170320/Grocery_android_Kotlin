@@ -35,6 +35,7 @@ public class PhoneActivity extends AppCompatActivity {
 
     //firebase auth
     FirebaseAuth mAuth;
+    private String phoneID, uid;
 
     //Log
     public static final String TAG = PhoneActivity.class.getName();
