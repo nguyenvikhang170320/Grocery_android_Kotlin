@@ -459,7 +459,6 @@ public class RegisterSellerActivity extends AppCompatActivity implements Locatio
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){

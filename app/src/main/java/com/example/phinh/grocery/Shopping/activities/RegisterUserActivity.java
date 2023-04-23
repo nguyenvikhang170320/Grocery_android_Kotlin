@@ -1,5 +1,6 @@
 package com.example.phinh.grocery.Shopping.activities;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -21,21 +22,41 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.service.autofill.UserData;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.example.phinh.grocery.R;
+import com.example.phinh.grocery.Shopping.models.ModelShop;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -43,11 +64,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import in.aabhasjindal.otptextview.OtpTextView;
 
 public class RegisterUserActivity extends AppCompatActivity implements LocationListener {
 
     private ImageView profileIv;
-    private EditText nameEt, phoneEt, countryEt, stateEt, cityEt, addressEt, emailEt, passwordEt, cPasswordEt;
+    private EditText nameEt, phoneCode,phoneEt, countryEt, stateEt, cityEt, addressEt, emailEt, passwordEt, cPasswordEt;
 
     //permission constants
     private static final int LOCATION_REQUEST_CODE = 100;
@@ -56,6 +80,8 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
     //image pick constants
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
+
+    private static final String TAG = "DANGKY";
     //permission arrays
     private String[] locationPermissions;
     private String[] cameraPermissions;
@@ -68,6 +94,20 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
+    private OtpTextView otp_view;
+    private Button btnVerify,registerBtn;
+    private RelativeLayout rv;
+    private LinearLayout lv;
+
+    private  String phone, phone_code, phone_number, verifycationId,uid;
+    private String fullName;
+    private String country;
+    private String state;
+    private String city;
+    private String address;
+    private String email;
+    private String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,9 +116,14 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
         //init ui views
         ImageButton backBtn = findViewById(R.id.backBtn);
         ImageButton gpsBtn = findViewById(R.id.gpsBtn);
+        rv = findViewById(R.id.rv);
+        lv = findViewById(R.id.lv);
         profileIv = findViewById(R.id.profileIv);
         nameEt = findViewById(R.id.nameEt);
         phoneEt = findViewById(R.id.phoneEt);
+        phoneCode = findViewById(R.id.phoneEt_code);
+        btnVerify = findViewById(R.id.btnVerify);
+        otp_view = findViewById(R.id.otp_view);
         countryEt = findViewById(R.id.countryEt);
         stateEt = findViewById(R.id.stateEt);
         cityEt = findViewById(R.id.cityEt);
@@ -86,7 +131,7 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
         emailEt = findViewById(R.id.emailEt);
         passwordEt = findViewById(R.id.passwordEt);
         cPasswordEt = findViewById(R.id.cPasswordEt);
-        Button registerBtn = findViewById(R.id.registerBtn);
+        registerBtn = findViewById(R.id.registerBtn);
         TextView registerSellerTv = findViewById(R.id.registerSellerTv);
 
         //init permissions array
@@ -95,6 +140,8 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Vui lòng đợi");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -122,22 +169,24 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
             //open register seller activity
             startActivity(new Intent(RegisterUserActivity.this, RegisterSellerActivity.class));
         });
+//        btnVerify.setOnClickListener(v -> {
+//            //111
+//            String otp = otp_view.getOTP().toString();
+//            if (otp.isEmpty()){
+//                Toast.makeText(this, "Nhập chính xác số otp", Toast.LENGTH_SHORT).show();
+//            }
+//            else {
+//                verifyCode(otp);
+//            }
+//        });
     }
 
-
-    private String fullName;
-    private String phoneNumber;
-    private String country;
-    private String state;
-    private String city;
-    private String address;
-    private String email;
-    private String password;
 
     private void inputData() {
         //input data
         fullName = nameEt.getText().toString().trim();
-        phoneNumber = phoneEt.getText().toString().trim();
+        phone_code = phoneCode.getText().toString().trim();
+        phone_number = phoneEt.getText().toString().trim();
         country = countryEt.getText().toString().trim();
         state = stateEt.getText().toString().trim();
         city = cityEt.getText().toString().trim();
@@ -145,16 +194,14 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
         email = emailEt.getText().toString().trim();
         password = passwordEt.getText().toString().trim();
         String confirmPassword = cPasswordEt.getText().toString().trim();
+
         //validate data
         if (TextUtils.isEmpty(fullName)) {
             Toast.makeText(this, "Nhập tên...", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(phoneNumber)) {
-            Toast.makeText(this, "Nhập số điện thoạ...", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (latitude == 0.0 || longitude == 0.0) {
+
+        else if (latitude == 0.0 || longitude == 0.0) {
             Toast.makeText(this, "Vui lòng nhấp vào nút GPS để phát hiện vị trí...", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -170,10 +217,109 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
             Toast.makeText(this, "Mật khẩu không khớp...", Toast.LENGTH_SHORT).show();
             return;
         }
+        else  {
+            Log.d(TAG, "inputData: Vô tới đây");
+            phone = phone_code + phone_number;
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+            Query query =databaseReference.orderByChild("phone").equalTo(phone);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        Log.d(TAG, "onDataChange: Số điện thoại trùng");
+                        Toast.makeText(RegisterUserActivity.this, "Số điện thoại bị trùng, vui lòng nhập lại", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    else {
+                        Log.d(TAG, "onDataChange: Số điện thoại không bị trùng, đang xử lý");
+                        Toast.makeText(RegisterUserActivity.this, "Đang tạo tài khoản", Toast.LENGTH_SHORT).show();
+//                        uploadOTP();//OTP
+                        createAccount();
+                    }
+                }
 
-        createAccount();
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }
+
     }
 
+    /*Nguyên đoạn code từ dòng 252 đến dòng 318 phần đăng nhập OTP
+    * Nhưng ở đây tôi chỉ thử nghiệm, chưa hoàn chỉnh nên tôi đóng đoạn code này lại
+    * Đang trong quá trình nghiên cứu thêm*/
+
+//    private void verifyCode(String otp) {
+//        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifycationId, otp);
+//        signInWithPhoneCredential(credential);
+//    }
+//
+//    private void signInWithPhoneCredential(PhoneAuthCredential credential) {
+//        firebaseAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//
+//
+////                            goToMainSellerActivity(); //người bán
+//                        } else {
+//                            // Sign in failed, display a message and update the UI
+//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+//                                // The verification code entered was invalid
+//                                Toast.makeText(RegisterUserActivity.this, "Mã xác minh đã nhập không hợp lệ",Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(RegisterUserActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
+
+    //xử lý số đt
+//    private void sendVerifycationCode(String phone) {
+//
+//        PhoneAuthOptions options =
+//                PhoneAuthOptions.newBuilder(firebaseAuth)
+//                        .setPhoneNumber(phone)       // Phone number to verify
+//                        .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+//                        .setActivity(this)                 // Activity (for callback binding)
+//                        .setCallbacks(mCallBack)
+//                        .build();
+//        PhoneAuthProvider.verifyPhoneNumber(options);
+//    }
+//
+//    protected PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+//        @Override
+//        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+//            String code = phoneAuthCredential.getSmsCode();
+//            if (code != null){
+//                otp_view.setOTP(code);
+//                verifyCode(code);
+//            }
+//        }
+//
+//        @Override
+//        public void onVerificationFailed(@NonNull FirebaseException e) {
+//            Toast.makeText(RegisterUserActivity.this, "Lỗi= "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+//
+//        @Override
+//        public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+//            super.onCodeSent(s, forceResendingToken);
+//            rv.setVisibility(View.GONE);
+//            lv.setVisibility(View.VISIBLE);
+//            verifycationId = s;
+//        }
+//    };
     private void createAccount() {
         progressDialog.setMessage("Tạo tài khoản...");
         progressDialog.show();
@@ -198,13 +344,12 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
 
         if (image_uri == null) {
             //save info without image
-
             //setup data to save
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("uid", "" + firebaseAuth.getUid());
             hashMap.put("email", "" + email);
             hashMap.put("name", "" + fullName);
-            hashMap.put("phone", "" + phoneNumber);
+            hashMap.put("phone", "" + phone);
             hashMap.put("country", "" + country);
             hashMap.put("state", "" + state);
             hashMap.put("city", "" + city);
@@ -221,6 +366,8 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
             ref.child(Objects.requireNonNull(firebaseAuth.getUid())).setValue(hashMap)
                     .addOnSuccessListener(aVoid -> {
                         //db updated
+                        Log.d(TAG, "saverFirebaseData: Thành công khi đăng ký không up ảnh");
+//                        uidOTP();
                         progressDialog.dismiss();
                         startActivity(new Intent(RegisterUserActivity.this, MainUserActivity.class));
                         finish();
@@ -246,13 +393,14 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
                         Uri downloadImageUri = uriTask.getResult();
 
                         if (uriTask.isSuccessful()) {
-
+                            Log.d(TAG, "saverFirebaseData: Upload cơ sở dữ liệu");
+//                            uidOTP();
                             //setup data to save
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("uid", "" + firebaseAuth.getUid());
                             hashMap.put("email", "" + email);
                             hashMap.put("name", "" + fullName);
-                            hashMap.put("phone", "" + phoneNumber);
+                            hashMap.put("phone", "" + phone);
                             hashMap.put("country", "" + country);
                             hashMap.put("state", "" + state);
                             hashMap.put("city", "" + city);
@@ -270,12 +418,16 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
                                     .addOnSuccessListener(aVoid -> {
                                         //db updated
                                         progressDialog.dismiss();
+                                        Log.d(TAG, "saverFirebaseData: Tạo tài khoản người dùng thành công");
+                                        Toast.makeText(this, "Tạo tài khoản người dùng thành công", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(RegisterUserActivity.this, MainUserActivity.class));
-                                        finish();
+
+
                                     })
                                     .addOnFailureListener(e -> {
                                         //failed updating db
                                         progressDialog.dismiss();
+                                        Toast.makeText(this, "Thất bại "+e.getMessage(), Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(RegisterUserActivity.this, MainUserActivity.class));
                                         finish();
                                     });
@@ -288,6 +440,49 @@ public class RegisterUserActivity extends AppCompatActivity implements LocationL
                     });
         }
     }
+
+    //Xử lý OTP và đưa lên cơ sở dữ liệu
+//    private void uploadOTP() {
+//        final String timestamp = "" + System.currentTimeMillis();
+//        Log.d(TAG, "uidOTP: Thành công bước 1");
+//        String uidOTP  = FirebaseAuth.getInstance().getUid();
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("uid", "" + firebaseAuth.getUid());
+//        hashMap.put("uidOTP", uidOTP);
+//        hashMap.put("email", "" + email);
+//        hashMap.put("name", "" + fullName);
+//        hashMap.put("phone", "" + phone);
+//        hashMap.put("country", "" + country);
+//        hashMap.put("state", "" + state);
+//        hashMap.put("city", "" + city);
+//        hashMap.put("address", "" + address);
+//        hashMap.put("latitude", "" + latitude);
+//        hashMap.put("longitude", "" + longitude);
+//        hashMap.put("timestamp", "" + timestamp);
+//        hashMap.put("accountType", "UserOTP");
+//        hashMap.put("online", "true");
+//        hashMap.put("profileImage", "");
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+//        reference.child(uidOTP).setValue(hashMap)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        progressDialog.dismiss();
+//                        Log.d(TAG, "onSuccess: Thành công OTP" +uidOTP);
+//                        Log.e(TAG, "onSuccess: Thành công OTP "+uidOTP );
+//                        Toast.makeText(RegisterUserActivity.this, "Upload OTP thành công", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(RegisterUserActivity.this, MainUserActivity.class));
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(RegisterUserActivity.this, "Thất bại "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
+//
+//    }
 
 
     private void showImagePickDialog() {

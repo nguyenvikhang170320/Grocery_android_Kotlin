@@ -1,15 +1,16 @@
 package com.example.phinh.grocery.Shopping.models;
 
 public class ModelShop {
-    private String uid, email, name, shopName, phone, deliveryFee, country, state, city, address, latitude, longitude, timestamp, accountType, online, shopOpen, profileImage;
+    private String uid, email, password, name, shopName, phone, deliveryFee, country, state, city, address, latitude, longitude, timestamp, accountType, online, shopOpen, profileImage;
 
     public ModelShop() {
 
     }
 
-    public ModelShop(String uid, String email, String name, String shopName, String phone, String deliveryFee, String country, String state, String city, String address, String latitude, String longitude, String timestamp, String accountType, String online, String shopOpen, String profileImage) {
+    public ModelShop(String uid, String email, String password, String name, String shopName, String phone, String deliveryFee, String country, String state, String city, String address, String latitude, String longitude, String timestamp, String accountType, String online, String shopOpen, String profileImage) {
         this.uid = uid;
         this.email = email;
+        this.password = password;
         this.name = name;
         this.shopName = shopName;
         this.phone = phone;
@@ -25,6 +26,14 @@ public class ModelShop {
         this.online = online;
         this.shopOpen = shopOpen;
         this.profileImage = profileImage;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUid() {

@@ -16,11 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.phinh.grocery.R;
-import com.example.phinh.grocery.Shopping.activities.ForgotPasswordActivity;
-import com.example.phinh.grocery.Shopping.activities.MainSellerActivity;
-import com.example.phinh.grocery.Shopping.activities.MainUserActivity;
-import com.example.phinh.grocery.Shopping.activities.PhoneActivity;
-import com.example.phinh.grocery.Shopping.activities.RegisterUserActivity;
+
+import com.example.phinh.grocery.Shopping.models.ModelShop;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -29,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -53,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         passwordEt = findViewById(R.id.passwordEt);
         forgotTv = findViewById(R.id.forgotTv);
         noAccountTv = findViewById(R.id.noAccountTv);
-        otpSMS = findViewById(R.id.otpSMS); // OTP số đt
         loginBtn = findViewById(R.id.loginBtn);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -82,14 +79,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        otpSMS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               //xử lý
-                startActivity(new Intent(LoginActivity.this, PhoneActivity.class));
-
-            }
-        });
     }
 
     private String email, password;
@@ -98,10 +87,11 @@ public class LoginActivity extends AppCompatActivity {
         email = emailEt.getText().toString().trim();
         password = passwordEt.getText().toString().trim();
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(this, "Invalid email pattern...", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
+//        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+//            Toast.makeText(this, "Invalid email pattern...", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         if (TextUtils.isEmpty(password)){
             Toast.makeText(this, "Enter password...", Toast.LENGTH_SHORT).show();
             return;
@@ -109,7 +99,34 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog.setMessage("Logging In...");
         progressDialog.show();
-
+        //Đăng nhập bằng số điện thoại đang nghiên cứu
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+//        Query query =databaseReference.orderByChild("phone").equalTo(email);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    for (DataSnapshot ds: snapshot.getChildren()){
+//                        ModelShop modelShop = ds.getValue(ModelShop.class);
+//                        if (modelShop != null){
+//                            if (!modelShop.getPassword().equals(password)){
+//                                Toast.makeText(LoginActivity.this, "Nhập lại mật khẩu", Toast.LENGTH_SHORT).show();
+//                            }else {
+//
+//                            }
+//                        }
+//                    }
+//                }
+//                else {
+//                    Toast.makeText(LoginActivity.this, "Lỗi đăng nhập không thành công", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -126,9 +143,12 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     private void makeMeOnline() {
+
+
         //after logging in, make user online
         progressDialog.setMessage("Checking User...");
 
@@ -169,12 +189,14 @@ public class LoginActivity extends AppCompatActivity {
                             if (accountType.equals("Seller")){
                                 progressDialog.dismiss();
                                 //user is seller
+                                Toast.makeText(LoginActivity.this, "Đăng nhập tài khoản người bán", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, MainSellerActivity.class));
                                 finish();
                             }
                             else {
                                 progressDialog.dismiss();
                                 //user is buyer
+                                Toast.makeText(LoginActivity.this, "Đăng nhập tài khoản người mua", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, MainUserActivity.class));
                                 finish();
                             }
