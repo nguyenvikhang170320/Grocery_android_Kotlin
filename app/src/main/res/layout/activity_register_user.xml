@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    tools:context=".Shopping.activities.RegisterUserActivity">
+    tools:context="com.example.grocery.activities.RegisterUserActivity">
 
     <!--Toolbar-->
     <RelativeLayout
@@ -78,47 +78,26 @@
             android:layout_margin="5dp"
             android:inputType="textPersonName|textCapWords"
             android:background="@drawable/shape_rect02"/>
-        <LinearLayout
-            android:id="@+id/lv1"
+
+        <EditText
+            android:id="@+id/phoneEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/nameEt">
-            <EditText
-                android:id="@+id/phoneEt_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/shape_rect02"
-                android:drawableStart="@drawable/ic_phone_gray"
-                android:drawablePadding="5dp"
-                android:text="+84"
-                android:padding="10dp" />
-            <EditText
-                android:id="@+id/phoneEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/shape_rect02"
-                android:drawableStart="@drawable/ic_phone_gray"
-                android:drawablePadding="5dp"
-                android:hint="SĐT"
-                android:inputType="phone"
-                android:padding="10dp" />
-
-        </LinearLayout>
-
-
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/nameEt"
+            android:background="@drawable/shape_rect02"
+            android:drawableStart="@drawable/ic_phone_gray"
+            android:drawablePadding="5dp"
+            android:hint="SĐT"
+            android:inputType="phone"
+            android:padding="10dp" />
 
         <LinearLayout
             android:id="@+id/addressLl"
-            android:layout_below="@id/lv1"
+            android:layout_below="@id/phoneEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -230,70 +209,5 @@
             android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/lv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:visibility="gone">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/otp"
-            android:layout_margin="10dp"
-            android:textAlignment="center"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OTP đang gửi đến SĐT vui lòng nhập OTP để xác thực"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@color/colorBlack"/>
-
-
-
-        <in.aabhasjindal.otptextview.OtpTextView
-            android:id="@+id/otp_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:bar_enabled="true"
-            app:bar_height="2dp"
-            app:width="40dp"
-            app:height="40dp"
-            app:length="6"
-            app:otp_text_size="24sp"
-            app:hide_otp="false" />
-
-<!--        <in.aabhasjindal.otptextview.OtpTextView-->
-<!--            android:id="@+id/otp_view"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColor="#000"-->
-<!--            app:height="40dp"-->
-<!--            app:width="40dp"-->
-<!--            app:bar_enabled="true"-->
-<!--            app:bar_height="2dp"-->
-<!--            app:length="6"-->
-<!--            app:otp=""-->
-<!--            app:otp_text_size="20sp"/>-->
-
-
-        <Button
-            android:id="@+id/btnVerify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/shape_circle01"
-            android:text="Xác thực OTP"
-            android:textAllCaps="false"
-            android:textColor="#cdd8f1" />
-    </LinearLayout>
-
 
 </RelativeLayout>

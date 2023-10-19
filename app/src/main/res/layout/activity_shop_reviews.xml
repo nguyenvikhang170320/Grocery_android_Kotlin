@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorGray00"
-    tools:context=".Shopping.activities.ShopReviewsActivity">
+    tools:context="com.example.grocery.activities.ShopReviewsActivity">
 
 
     <!--Toolbar-->

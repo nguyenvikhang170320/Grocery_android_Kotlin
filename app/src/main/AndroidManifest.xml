@@ -4,6 +4,10 @@
     package="com.example.phinh.grocery"
     android:installLocation="auto">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -20,36 +24,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
+
+        <activity android:name="com.example.grocery.activities.AddPromotionCodeActivity" />
+        <activity android:name="com.example.grocery.activities.PromotionCodesActivity" />
+        <activity android:name="com.example.grocery.activities.SettingsActivity" />
+        <activity android:name="com.example.grocery.activities.OrderDetailsSellerActivity" />
+        <activity android:name="com.example.grocery.activities.ShopReviewsActivity" />
+        <activity android:name="com.example.grocery.activities.WriteReviewActivity" />
+        <activity android:name="com.example.grocery.activities.OrderDetailsUsersActivity" />
+        <activity android:name="com.example.grocery.activities.EditProductActivity" />
+        <activity android:name="com.example.grocery.activities.AddProductActivity" />
+        <activity android:name="com.example.grocery.activities.ProfileEditSellerActivity" />
+        <activity android:name="com.example.grocery.activities.ProfileEditUserActivity" />
+        <activity android:name="com.example.grocery.activities.MainUserActivity" />
+        <activity android:name="com.example.grocery.activities.MainSellerActivity" />
+        <activity android:name="com.example.grocery.activities.ForgotPasswordActivity" />
+        <activity android:name="com.example.grocery.activities.RegisterUserActivity" />
+        <activity android:name="com.example.grocery.activities.RegisterSellerActivity" />
+        <activity android:name="com.example.grocery.activities.LoginActivity" />
         <activity
-            android:name=".LoginPhoneActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity android:name=".Shopping.activities.OTP.VerifyPhoneActivity" />
-        <activity android:name=".Shopping.activities.AddPromotionCodeActivity" />
-        <activity android:name=".Shopping.activities.PromotionCodesActivity" />
-        <activity android:name=".Shopping.activities.SettingsActivity" />
-        <activity android:name=".Shopping.activities.OrderDetailsSellerActivity" />
-        <activity android:name=".Shopping.activities.ShopReviewsActivity" />
-        <activity android:name=".Shopping.activities.WriteReviewActivity" />
-        <activity android:name=".Shopping.activities.OrderDetailsUsersActivity" />
-        <activity android:name=".Shopping.activities.EditProductActivity" />
-        <activity android:name=".Shopping.activities.AddProductActivity" />
-        <activity android:name=".Shopping.activities.ProfileEditSellerActivity" />
-        <activity android:name=".Shopping.activities.ProfileEditUserActivity" />
-        <activity android:name=".Shopping.activities.MainUserActivity" />
-        <activity android:name=".Shopping.activities.MainSellerActivity" />
-        <activity android:name=".Shopping.activities.ForgotPasswordActivity" />
-        <activity android:name=".Shopping.activities.RegisterUserActivity" />
-        <activity android:name=".Shopping.activities.RegisterSellerActivity" />
-        <activity android:name=".Shopping.activities.LoginActivity" />
-        <activity
-            android:name=".Shopping.activities.ShopDetailsActivity"
+            android:name="com.example.grocery.activities.ShopDetailsActivity"
             android:windowSoftInputMode="stateHidden" /> <!-- hide keyboard by default -->
         <activity
-            android:name=".Shopping.activities.SplashActivity"
+            android:name="com.example.grocery.activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,7 +59,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <service
-            android:name=".Shopping.MyFirebaseMessaging"
+            android:name="com.example.grocery.thongbao.MyFirebaseMessaging"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
