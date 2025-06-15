@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iconIv"
             android:layout_below="@id/promoCodeTv"
-            android:text="Giá khuyến mãi: $"
+            android:text="Giá khuyến mãi: "
             android:textColor="@color/colorBlack"/>
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iconIv"
             android:layout_below="@id/promoPriceTv"
-            android:text="Giá niêm yết: $"
+            android:text="Giá niêm yết: "
             android:textColor="@color/colorBlack"/>
 
         <TextView

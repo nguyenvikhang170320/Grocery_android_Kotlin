@@ -1,0 +1,49 @@
+package com.example.grocery.filter
+
+import android.annotation.SuppressLint
+import android.widget.Filter
+import com.example.grocery.adapters.AdapterOrderShop
+import com.example.grocery.models.ModelOrderShop
+import java.util.Locale
+
+class FilterOrderShop(
+    private val adapter: AdapterOrderShop,
+    private val filterList: ArrayList<ModelOrderShop?>?
+) : Filter() {
+    override fun performFiltering(constraint: CharSequence): FilterResults {
+        var constraint: CharSequence? = constraint
+        val results = FilterResults()
+        //validate data for search query
+        if (constraint != null && constraint.length > 0) {
+            //search filed not empty, searching something, perform search
+
+            //change to upper case, to make case insensitive
+            constraint = constraint.toString().uppercase(Locale.getDefault())
+            //store our filtered list
+            val filteredModels = ArrayList<ModelOrderShop>()
+            for (i in filterList!!.indices) {
+                //check, search by title and category
+                if (filterList[i]!!.orderStatus!!.uppercase(Locale.getDefault())
+                        .contains(constraint)
+                ) {
+                    //add filtered data to list
+                    filteredModels.add(filterList[i]!!)
+                }
+            }
+            results.count = filteredModels.size
+            results.values = filteredModels
+        } else {
+            //search filed empty, not searching, return original/all/complete list
+            results.count = filterList!!.size
+            results.values = filterList
+        }
+        return results
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun publishResults(constraint: CharSequence, results: FilterResults) {
+        adapter.orderShopArrayList = results.values as ArrayList<ModelOrderShop?>
+        //refresh adapter
+        adapter.notifyDataSetChanged()
+    }
+}

@@ -10,17 +10,18 @@
     <RelativeLayout
         android:id="@+id/toolbarRl"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="70dp"
         android:background="@drawable/shape_rect01"
         android:padding="10dp">
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
             android:background="@null"
-            android:src="@drawable/ic_back_white" />
+            android:src="@drawable/ic_back_white"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:id="@+id/titleTv"
@@ -48,6 +49,7 @@
         android:id="@+id/promoCodeEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@+id/imageIv"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
@@ -66,6 +68,7 @@
         android:id="@+id/promoDescriptionEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@+id/promoCodeEt"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"
@@ -80,6 +83,7 @@
         android:id="@+id/promoPriceEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@+id/promoDescriptionEt"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"
@@ -94,6 +98,7 @@
         android:id="@+id/minimumOrderPriceEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@+id/promoPriceEt"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"

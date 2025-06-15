@@ -16,10 +16,11 @@
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_back_white"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,158 +33,172 @@
 
         <ImageButton
             android:id="@+id/gpsBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_gps_white"
             android:layout_alignParentEnd="true"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="GPS"/>
 
     </RelativeLayout>
-
-
-    <com.blogspot.atifsoftwares.circularimageview.CircularImageView
-        android:id="@+id/profileIv"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_below="@id/toolbarRl"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/user"
-        app:c_border="false"
-        app:c_border_color="@color/colorPrimary"
-        app:c_border_width="1dp" />
-
-    <EditText
-        android:id="@+id/nameEt"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/profileIv"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_rect02"
-        android:drawableStart="@drawable/ic_person_gray"
-        android:drawablePadding="5dp"
-        android:hint="Tên đầy đủ"
-        android:inputType="textPersonName|textCapWords"
-        android:padding="10dp"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarRl">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/profileIv"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/user"
+                app:c_border="false"
+                app:c_border_color="@color/colorPrimary"
+                app:c_border_width="1dp" />
 
-    <EditText
-        android:id="@+id/shopNameEt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nameEt"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_rect02"
-        android:drawableStart="@drawable/ic_store_gray"
-        android:drawablePadding="5dp"
-        android:hint="Tên Shop"
-        android:inputType="textPersonName|textCapWords"
-        android:padding="10dp"/>
+            <EditText
+                android:id="@+id/nameEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/profileIv"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_person_gray"
+                android:drawablePadding="5dp"
+                android:hint="Tên đầy đủ"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="10dp"/>
 
-    <EditText
-        android:id="@+id/phoneEt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/shopNameEt"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_rect02"
-        android:drawableStart="@drawable/ic_person_gray"
-        android:drawablePadding="5dp"
-        android:hint="SĐT"
-        android:inputType="phone"
-        android:padding="10dp"/>
+            <EditText
+                android:id="@+id/shopNameEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/nameEt"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_store_gray"
+                android:drawablePadding="5dp"
+                android:hint="Tên Shop"
+                android:inputType="textPersonName|textCapWords"
+                android:padding="10dp"/>
 
-    <EditText
-        android:id="@+id/deliveryFeeEt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/phoneEt"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_rect02"
-        android:drawableStart="@drawable/ic_store_gray"
-        android:drawablePadding="5dp"
-        android:hint="Phí giao hàng"
-        android:inputType="numberDecimal"
-        android:padding="10dp"/>
+            <EditText
+                android:id="@+id/phoneEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/shopNameEt"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_person_gray"
+                android:drawablePadding="5dp"
+                android:hint="SĐT"
+                android:inputType="phone"
+                android:padding="10dp"/>
 
-
-    <LinearLayout
-        android:id="@+id/addressLl"
-        android:layout_below="@id/deliveryFeeEt"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/countryEt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/shape_rect02"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_location_gray"
-            android:drawablePadding="5dp"
-            android:hint="Quốc gia"
-            android:inputType="textPostalAddress"
-            android:padding="10dp" />
-
-        <EditText
-            android:id="@+id/stateEt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/shape_rect02"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_location_gray"
-            android:drawablePadding="5dp"
-            android:hint="Tiểu bang"
-            android:inputType="textPostalAddress"
-            android:padding="10dp" />
-
-        <EditText
-            android:id="@+id/cityEt"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/shape_rect02"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_location_gray"
-            android:drawablePadding="5dp"
-            android:hint="Thành phố"
-            android:inputType="textPostalAddress"
-            android:padding="10dp" />
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/addressEt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addressLl"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_rect02"
-        android:drawableStart="@drawable/ic_location_gray"
-        android:drawablePadding="5dp"
-        android:hint="Địa chỉ"
-        android:inputType="textPostalAddress|textMultiLine"
-        android:padding="10dp"/>
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/shopOpenSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addressEt"
-        android:layout_margin="5dp"
-        android:text="Trạng thái Shop"/>
-
-    <Button
-        android:id="@+id/updateBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_below="@id/shopOpenSwitch"
-        android:text="Cập nhật"
-        android:layout_centerHorizontal="true"/>
+            <EditText
+                android:id="@+id/deliveryFeeEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/phoneEt"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_store_gray"
+                android:drawablePadding="5dp"
+                android:hint="Phí giao hàng"
+                android:inputType="numberDecimal"
+                android:padding="10dp"/>
 
 
+            <LinearLayout
+                android:id="@+id/addressLl"
+                android:layout_below="@id/deliveryFeeEt"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <EditText
+                    android:id="@+id/countryEt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/shape_rect02"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_location_gray"
+                    android:drawablePadding="5dp"
+                    android:hint="Quốc gia"
+                    android:inputType="textPostalAddress"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/stateEt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/shape_rect02"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_location_gray"
+                    android:drawablePadding="5dp"
+                    android:hint="Tỉnh"
+                    android:inputType="textPostalAddress"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/cityEt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:minHeight="48dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/shape_rect02"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_location_gray"
+                    android:drawablePadding="5dp"
+                    android:hint="Thành phố"
+                    android:inputType="textPostalAddress"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/addressEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/addressLl"
+                android:layout_margin="5dp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_location_gray"
+                android:drawablePadding="5dp"
+                android:hint="Địa chỉ"
+                android:inputType="textPostalAddress|textMultiLine"
+                android:padding="10dp"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/shopOpenSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/addressEt"
+                android:layout_margin="5dp"
+                android:text="Trạng thái Shop"/>
+
+            <Button
+                android:id="@+id/updateBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_below="@id/shopOpenSwitch"
+                android:text="Cập nhật"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+    </ScrollView>
 </RelativeLayout>

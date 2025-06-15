@@ -18,10 +18,11 @@
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
-            android:src="@drawable/ic_back_white"/>
+            android:src="@drawable/ic_back_white"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,19 +35,21 @@
 
         <ImageButton
             android:id="@+id/editBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_edit_white"/>
+            android:src="@drawable/ic_edit_white"
+            android:contentDescription="Chỉnh sửa"/>
 
         <ImageButton
             android:id="@+id/mapBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:layout_toStartOf="@id/editBtn"
-            android:src="@drawable/ic_map_white"/>
+            android:src="@drawable/ic_map_white"
+            android:contentDescription="Maps"/>
     </RelativeLayout>
 
 

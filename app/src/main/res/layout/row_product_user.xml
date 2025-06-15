@@ -59,12 +59,20 @@
                 android:minLines="2"
                 android:text="Mô tả sảrn phẩm"
                 android:textColor="@color/colorBlack" />
-
+            <TextView
+                android:id="@+id/quantityTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/descriptionTv"
+                android:maxLines="2"
+                android:minLines="2"
+                android:text="Số lượng"
+                android:textColor="@color/colorBlack" />
             <TextView
                 android:id="@+id/addToCartTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/descriptionTv"
+                android:layout_below="@+id/quantityTv"
                 android:drawableStart="@drawable/ic_add_shopping_primary"
                 android:gravity="center_vertical"
                 android:text="Thêm vào giỏ hàng"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.grocery.grocery.grocery.activities.WriteReviewActivity">
+    tools:context="com.example.grocery.activities.WriteReviewActivity">
 
 
     <!--Toolbar-->
@@ -18,9 +18,10 @@
         <ImageButton
             android:id="@+id/backBtn"
             android:src="@drawable/ic_back_white"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@null"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@null"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,73 +33,85 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
-
-    <!--shop image-->
-    <com.blogspot.atifsoftwares.circularimageview.CircularImageView
-        android:id="@+id/profileIv"
-        android:layout_below="@+id/toolbarRl"
-        android:layout_width="150dp"
-        android:layout_centerHorizontal="true"
-        android:layout_height="150dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/ic_store_gray"
-        app:c_border="true"
-        app:c_border_width="2dp"
-        android:layout_gravity="center_horizontal"
-        app:c_border_color="@color/colorPrimary"/>
-
-    <TextView
-        android:id="@+id/shopNameTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profileIv"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:text="Tên Shop"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/labelTv"
-        android:layout_below="@+id/shopNameTv"
-        android:textAlignment="center"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/colorBlack"
-        android:text="Trải nghiệm của bạn với người bán này như thế nào? \ n Phản hồi của bạn rất quan trọng để cải thiện chất lượng dịch vụ của chúng tôi"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarRl">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <!--shop image-->
+            <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                android:id="@+id/profileIv"
+                android:layout_width="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="150dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_store_gray"
+                app:c_border="true"
+                app:c_border_width="2dp"
+                android:layout_gravity="center_horizontal"
+                app:c_border_color="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/shopNameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profileIv"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:text="Tên Shop"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/labelTv"
+                android:layout_below="@+id/shopNameTv"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorBlack"
+                android:text="Trải nghiệm của bạn với người bán này như thế nào? \ n Phản hồi của bạn rất quan trọng để cải thiện chất lượng dịch vụ của chúng tôi"/>
 
 
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_below="@+id/labelTv"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:numStars="5"
-        android:layout_marginTop="10dp"/>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_below="@+id/labelTv"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:numStars="5"
+                android:layout_marginTop="10dp"/>
 
-    <EditText
-        android:id="@+id/reviewEt"
-        android:layout_below="@+id/ratingBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_rect02"
-        android:hint="Viết đánh giá..."
-        android:gravity="top"
-        android:minHeight="100dp"
-        android:padding="10dp"
-        android:layout_margin="20dp"/>
+            <EditText
+                android:id="@+id/reviewEt"
+                android:layout_below="@+id/ratingBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rect02"
+                android:hint="Viết đánh giá..."
+                android:gravity="top"
+                android:minHeight="100dp"
+                android:padding="10dp"
+                android:layout_margin="20dp"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/submitBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_done_white"
-        android:layout_margin="5dp"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/submitBtn"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/reviewEt"
+                android:minHeight="48dp"
+                android:src="@drawable/ic_done_white"
+                android:layout_margin="10dp"
+                android:contentDescription="Gửi"/>
+
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

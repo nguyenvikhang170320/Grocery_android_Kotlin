@@ -107,31 +107,34 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
         <ImageButton
             android:id="@+id/decrementBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            android:src="@drawable/ic_remove_black"/>
+            android:src="@drawable/ic_remove_black"
+            android:contentDescription="Giảm"/>
 
         <TextView
             android:id="@+id/quantityTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:text="1"
             android:textColor="@color/colorBlack"
             android:textSize="18sp"/>
 
         <ImageButton
             android:id="@+id/incrementBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center_vertical"
             android:background="@null"
+            android:contentDescription="Tăng"
             android:src="@drawable/ic_add_black"/>
     </LinearLayout>
 

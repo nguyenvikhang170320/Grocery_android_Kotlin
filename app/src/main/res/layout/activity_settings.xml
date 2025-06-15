@@ -17,10 +17,11 @@
         <!--back button-->
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_back_white"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="Quay lại"/>
 
         <!--title-->
         <TextView
@@ -42,6 +43,7 @@
             android:id="@+id/fcmSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:background="@color/colorWhite"
             android:paddingStart="10dp"
             android:paddingTop="10dp"
@@ -53,6 +55,7 @@
             android:id="@+id/notificationStatusTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:layout_below="@id/fcmSwitch"
             android:background="@color/colorWhite"
             android:paddingStart="10dp"

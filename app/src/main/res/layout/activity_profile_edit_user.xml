@@ -16,10 +16,11 @@
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_back_white"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,11 +33,12 @@
 
         <ImageButton
             android:id="@+id/gpsBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ic_gps_white"
             android:layout_alignParentEnd="true"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="GPS"/>
 
     </RelativeLayout>
 
@@ -57,6 +59,7 @@
         android:id="@+id/nameEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@id/profileIv"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"
@@ -70,6 +73,7 @@
         android:id="@+id/phoneEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@id/nameEt"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"
@@ -91,6 +95,7 @@
             android:id="@+id/countryEt"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:minHeight="48dp"
             android:layout_margin="5dp"
             android:background="@drawable/shape_rect02"
             android:layout_weight="1"
@@ -104,6 +109,7 @@
             android:id="@+id/stateEt"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:minHeight="48dp"
             android:layout_margin="5dp"
             android:background="@drawable/shape_rect02"
             android:layout_weight="1"
@@ -117,6 +123,7 @@
             android:id="@+id/cityEt"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:minHeight="48dp"
             android:layout_margin="5dp"
             android:background="@drawable/shape_rect02"
             android:layout_weight="1"
@@ -132,6 +139,7 @@
         android:id="@+id/addressEt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:layout_below="@id/addressLl"
         android:layout_margin="5dp"
         android:background="@drawable/shape_rect02"

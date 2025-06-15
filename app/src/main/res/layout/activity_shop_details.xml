@@ -113,25 +113,29 @@
 
                 <ImageButton
                     android:id="@+id/callBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_call_white"
-                    android:background="@null"/>
+                    android:background="@null"
+                    android:contentDescription="Gọi điện"/>
 
                 <ImageButton
                     android:id="@+id/mapBtn"
                     android:layout_marginStart="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_map_white"
-                    android:background="@null"/>
+                    android:background="@null"
+
+                    android:contentDescription="Maps"/>
                 <ImageButton
                     android:id="@+id/chatBtn"
                     android:layout_marginStart="7dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_chat"
-                    android:background="@null"/>
+                    android:background="@null"
+                    android:contentDescription="Chats"/>
 
             </LinearLayout>
 
@@ -146,24 +150,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_rect01"
-        android:padding="10dp">
+        android:padding="2dp">
 
         <ImageButton
             android:id="@+id/cartBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
             android:background="@null"
             android:src="@drawable/ic_cart_gray"
-            app:tint="@color/colorWhite" />
+            app:tint="@color/colorWhite"
+            android:contentDescription="Giỏ hàng"/>
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
-            android:src="@drawable/ic_back_white"/>
+            android:src="@drawable/ic_back_white"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -188,12 +194,13 @@
         <!--show shop reviews-->
         <ImageButton
             android:id="@+id/reviewsBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_toStartOf="@id/cartBtn"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_star_white"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:contentDescription="Đánh giá"/>
     </RelativeLayout>
 
     <!--Products-->
@@ -207,6 +214,7 @@
             android:id="@+id/searchProductEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
@@ -220,14 +228,15 @@
         <!--filter products-->
         <ImageButton
             android:id="@+id/filterProductBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:background="@null"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_filter_gray"/>
+            android:src="@drawable/ic_filter_gray"
+            android:contentDescription="Tìm kiếm sản phẩm"/>
         <!--show filtered products title-->
         <TextView
             android:id="@+id/filteredProductsTv"

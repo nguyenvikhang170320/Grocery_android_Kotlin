@@ -19,10 +19,11 @@
 
         <ImageButton
             android:id="@+id/backBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
-            android:src="@drawable/ic_back_white"/>
+            android:src="@drawable/ic_back_white"
+            android:contentDescription="Quay lại"/>
 
         <TextView
             android:layout_width="wrap_content"
