@@ -16,7 +16,7 @@ import com.example.grocery.adapters.AdapterOrderShop.HolderOrderShop
 import com.example.grocery.filter.FilterOrderShop
 import com.example.grocery.models.ModelOrderShop
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

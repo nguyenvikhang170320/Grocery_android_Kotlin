@@ -24,6 +24,7 @@ import com.example.grocery.adapters.AdapterOrderedItem
 import com.example.grocery.models.ModelOrderedItem
 import com.example.grocery.thumucquantrong.Constants
 import com.example.grocery.R
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -108,29 +109,42 @@ class OrderDetailsSellerActivity : AppCompatActivity() {
     }
 
     private fun editOrderStatus(selectedOption: String) {
-        //setup data to put in firebase db
+        //setup data để cập nhật trạng thái đơn hàng
         val hashMap = HashMap<String, Any>()
-        hashMap["orderStatus"] = "" + selectedOption
+        hashMap["orderStatus"] = selectedOption
+
         val ref = FirebaseDatabase.getInstance().getReference("Users")
-        ref.child(Objects.requireNonNull(firebaseAuth!!.uid).toString()).child("Orders").child(
-            orderId!!
-        )
+        val sellerUid = firebaseAuth!!.uid.toString()
+
+        ref.child(sellerUid).child("Orders").child(orderId!!)
             .updateChildren(hashMap)
-            .addOnSuccessListener { aVoid: Void? ->
-                val message = "Đặt hàng bây giờ là $selectedOption"
-                //status updated
+            .addOnSuccessListener {
+                val message = "Trạng thái đơn hàng hiện tại: $selectedOption"
                 Toast.makeText(this@OrderDetailsSellerActivity, message, Toast.LENGTH_SHORT).show()
-                prepareNotificationMessage(
-                    orderId,
-                    message
-                ) // hiện thông báo không phải thông báo toast bình thường
+
+                // 🔁 Lấy token của buyer để gửi FCM
+                val usersRef = FirebaseDatabase.getInstance().getReference("Users")
+                usersRef.child(orderBy!!).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val buyerToken = snapshot.child("fcmToken").value as? String
+                        if (!buyerToken.isNullOrEmpty()) {
+                            Log.d(TAG, "token: "+buyerToken)
+                            prepareNotificationMessage(orderId, message, orderBy!!)
+                        } else {
+                            Toast.makeText(this@OrderDetailsSellerActivity, "Không tìm thấy token của người mua", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(this@OrderDetailsSellerActivity, "Lỗi: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
-            .addOnFailureListener { e: Exception ->
-                //failed updating status, show reason
-                Toast.makeText(this@OrderDetailsSellerActivity, "" + e.message, Toast.LENGTH_SHORT)
-                    .show()
+            .addOnFailureListener { e ->
+                Toast.makeText(this@OrderDetailsSellerActivity, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     private fun openMap() {
         //saddr means soruce address
@@ -194,8 +208,12 @@ class OrderDetailsSellerActivity : AppCompatActivity() {
                     var discountStr = "" + dataSnapshot.child("discount").value // Lấy dưới dạng String
 
                     // --- BẮT ĐẦU SỬA LỖI ĐỊNH DẠNG ---
+                    Log.d("Dia chi", latitude);
+                    Log.d("Dia chi", longitude);
                     val latitudeDouble = latitude.cleanAndToDouble()
                     val longitudeDouble = longitude.cleanAndToDouble()
+                    Log.d("Dia chi", latitudeDouble.toString());
+                    Log.d("Dia chi", longitudeDouble.toString());
                     // Chuyển đổi các giá trị số từ String sang Double an toàn
                     val orderCostDouble = orderCostStr.toDoubleOrNull() ?: 0.0
                     val deliveryFeeDouble = deliveryFeeStr.toDoubleOrNull() ?: 0.0
@@ -256,19 +274,24 @@ class OrderDetailsSellerActivity : AppCompatActivity() {
             ?.replace(",", ".") // Thay thế dấu phẩy (nếu có) bằng dấu chấm
             ?.toDoubleOrNull() ?: 0.0}
     private fun findAddress(latitude: Double, longitude: Double) {
-        val lat = latitude
-        val lon = longitude
-        val geocoder: Geocoder
-        val addresses: List<Address>?
-        geocoder = Geocoder(this, Locale.getDefault())
+        val geocoder: Geocoder = Geocoder(this, Locale.getDefault())
         try {
-            addresses = geocoder.getFromLocation(lat, lon, 1)
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
 
-            //complete address
-            val address = addresses!![0].getAddressLine(0)
-            addressTv!!.text = address
+            // Update UI on the main thread
+            runOnUiThread {
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0].getAddressLine(0)
+                    addressTv!!.text = address
+                } else {
+                    // Handle case where no address is found
+                    addressTv!!.text = "Không tìm thấy địa chỉ"
+                    Toast.makeText(this, "Không tìm thấy địa chỉ cho vị trí này.", Toast.LENGTH_SHORT).show()
+                }
+            }
         } catch (e: Exception) {
-            Toast.makeText(this, "" + e.message, Toast.LENGTH_SHORT).show()
+            Log.e("OrderDetailsSeller", "Lỗi khi tìm địa chỉ: ${e.message}", e) // Log the full stack trace
+            Toast.makeText(this, "Lỗi khi tìm địa chỉ: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -309,61 +332,46 @@ class OrderDetailsSellerActivity : AppCompatActivity() {
     // bị lỗi hiện  thông báo order có liên quan đến file MyFiresebaseMessaging
     //Do cơ sở dữ liệu cloud firebase update lên nên code này dùng đã cũ không áp dụng đươc
     //Nên muốn sửa rất đơn giản chỉ code lại vài dòng mà tôi làm biến sửa quá, nên các bạn thông cảm:)))
-    private fun prepareNotificationMessage(orderId: String?, message: String) {
-        Log.d(TAG, "prepareNotificationMessage: ")
-        //When user seller changes order status InProgress/Cancelled/Completed, send notification to buyer
+    private fun prepareNotificationMessage(orderId: String?, message: String, buyerUid: String) {
+        Log.d(TAG, "prepareNotificationMessage: Gửi đến buyerUid=$buyerUid")
 
-        //prepare data for notification
-        val NOTIFICATION_TOPIC =
-            "/topics/" + Constants.FCM_TOPIC //must be same as subscribed by user
-        val NOTIFICATION_TITLE = "Your Order $orderId"
-        val NOTIFICATION_MESSAGE = "" + message
-        val NOTIFICATION_TYPE = "OrderStatusChanged"
-
-        //prepare json (what to send and where to send)
-        val notificationJo = JSONObject()
-        val notificationBodyJo = JSONObject()
-        try {
-            //what to send
-            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE)
-            notificationBodyJo.put("buyerUid", orderBy)
-            notificationBodyJo.put(
-                "sellerUid",
-                firebaseAuth!!.uid
-            ) //since we are logged in as seller to change order status so current user uid is seller uid
-            notificationBodyJo.put("orderId", orderId)
-            notificationBodyJo.put("notificationTitle", NOTIFICATION_TITLE)
-            notificationBodyJo.put("notificationMessage", NOTIFICATION_MESSAGE)
-            //where to send
-            notificationJo.put("to", NOTIFICATION_TOPIC) //to all who subscribed to this topic
-            notificationJo.put("data", notificationBodyJo)
-        } catch (e: Exception) {
-            Toast.makeText(this, "" + e.message, Toast.LENGTH_SHORT).show()
+        val json = JSONObject()
+        val sellerUid = firebaseAuth?.uid
+        if (sellerUid == null) {
+            Toast.makeText(this, "Lỗi: Chưa đăng nhập", Toast.LENGTH_SHORT).show()
+            return
         }
-        sendFcmNotification(notificationJo)
+
+        try {
+            json.put("buyerUid", buyerUid)
+            json.put("sellerUid", sellerUid)
+            json.put("orderId", orderId)
+            json.put("newStatus", "Đã xác nhận")
+        } catch (e: Exception) {
+            Toast.makeText(this, "Lỗi tạo JSON: ${e.message}", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        sendFcmNotification(json)
     }
+    private fun sendFcmNotification(notificationJson: JSONObject) {
+        val url = "http://172.16.1.61:3000/notify-buyer" // 👉 đổi IP theo server bạn
 
-    private fun sendFcmNotification(notificationJo: JSONObject) {
-        //send volley request
-        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest(
-            "https://fcm.googleapis.com/fcm/send",
-            notificationJo,
-            Response.Listener {
-                //notification sent
+        val request = object : JsonObjectRequest(Method.POST, url, notificationJson,
+            Response.Listener { response ->
+                Log.d(TAG, "Notification sent successfully: $response")
             },
-            Response.ErrorListener { error: VolleyError? -> }) {
+            Response.ErrorListener { error ->
+                Log.e(TAG, "Notification failed: ${error.message}")
+            }) {
             override fun getHeaders(): Map<String, String> {
-
-                //put required headers
-                val headers: MutableMap<String, String> = HashMap()
+                val headers = HashMap<String, String>()
                 headers["Content-Type"] = "application/json"
-                headers["Authorization"] = "key=" + Constants.FCM_KEY
                 return headers
             }
         }
 
-        //enque the volley request
-        Volley.newRequestQueue(this).add(jsonObjectRequest)
+        Volley.newRequestQueue(this).add(request)
     }
 
     companion object {

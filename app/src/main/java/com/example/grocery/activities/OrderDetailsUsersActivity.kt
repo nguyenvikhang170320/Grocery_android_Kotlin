@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.grocery.adapters.AdapterOrderedItem
 import com.example.grocery.models.ModelOrderedItem
 import com.example.grocery.R
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.Calendar
 import java.util.Locale
-import kotlin.math.log
 
 class OrderDetailsUsersActivity : AppCompatActivity() {
     private var orderTo: String? = null
@@ -204,7 +204,7 @@ class OrderDetailsUsersActivity : AppCompatActivity() {
         try {
             addresses = geocoder.getFromLocation(lat, lon, 1)
             val address = addresses!![0].getAddressLine(0) //complete address
-            addressTv!!.text = address
+            addressTv?.text = address
         } catch (e: Exception) {
             e.printStackTrace()
         }

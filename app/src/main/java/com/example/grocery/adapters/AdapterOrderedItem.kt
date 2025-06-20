@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.grocery.adapters.AdapterOrderedItem.HolderOrderedItem
 import com.example.grocery.models.ModelOrderedItem
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter
-import java.util.Formatter
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 
 class AdapterOrderedItem(
     private val context: Context,

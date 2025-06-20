@@ -84,5 +84,7 @@ dependencies {
     implementation 'com.github.TheHasnatBD:SweetToast:1.0.2'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //doanh thu tháng năm
+    implementation 'com.github.dewinjm:monthyear-picker:1.0.2'
 
 }

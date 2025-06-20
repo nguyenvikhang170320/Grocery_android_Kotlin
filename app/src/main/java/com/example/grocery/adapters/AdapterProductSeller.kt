@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Paint
-import android.util.Log // Import Log for debugging
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import com.example.grocery.adapters.AdapterProductSeller.HolderProductSeller
 import com.example.grocery.filter.FilterProduct
 import com.example.grocery.models.ModelProduct
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter // Ensure this import is correct
+import com.example.grocery.thumucquantrong.CurrencyFormatter // Ensure this import is correct
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

@@ -1,6 +1,5 @@
 package com.example.grocery.thongbao
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,147 +11,128 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.example.grocery.R
 import com.example.grocery.activities.OrderDetailsSellerActivity
 import com.example.grocery.activities.OrderDetailsUsersActivity
-import com.example.grocery.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.util.Random
+import java.util.*
 
-/*
-* Mọi dữ liệu hiện thông báo message order seller hiện ở đây các bạn có thể tham khảo
-* Có liên quan đến activity OderDetailsSeller dòng 131
-* Các bạn có thể sửa code bên trong này lại chút và bên activity liên quan là có thể hiện được thông báo
-* Do cloud message firebase đã nâng cấp nên đoạn code cũ này có 1 phần không được hỗ trợ nữa, nên không thể hiện thông báo như ban đầu được
-* Các bạn có thể tham khảo thêm cloud message firebase trên youtube */
 class MyFirebaseMessaging : FirebaseMessagingService() {
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        //all notifications will be received here
+
         val firebaseAuth = FirebaseAuth.getInstance()
-        val firebaseUser = firebaseAuth.currentUser
+        val firebaseUser = firebaseAuth.currentUser ?: return
 
-        //get data from notification
-        val notificationType = remoteMessage.data["notificationType"]!!
-        if (notificationType == "NewOrder") {
-            val buyerUid = remoteMessage.data["buyerUid"]
-            val sellerUid = remoteMessage.data["sellerUid"]
-            val orderId = remoteMessage.data["orderId"]
-            val notificationTitle = remoteMessage.data["notificationTitle"]
-            val notificationDescription = remoteMessage.data["notificationMessage"]
-            if (firebaseUser != null && firebaseAuth.uid == sellerUid) {
-                //user is signed in and is same user to which notification is sent
-                showNotification(
-                    orderId,
-                    sellerUid,
-                    buyerUid,
-                    notificationTitle,
-                    notificationDescription,
-                    notificationType
-                )
-            }
+        val data = remoteMessage.data
+        Log.d("FCM", "onMessageReceived: $data")
+
+        val notificationType = data["notificationType"] ?: return
+        val buyerUid = data["buyerUid"]
+        val sellerUid = data["sellerUid"]
+        val orderId = data["orderId"]
+        val title = data["notificationTitle"] ?: "Thông báo"
+        val message = data["notificationMessage"] ?: "Bạn có thông báo mới"
+
+        val currentUid = firebaseUser.uid
+
+        if (orderId.isNullOrBlank() || buyerUid.isNullOrBlank() || sellerUid.isNullOrBlank()) {
+            Log.w("FCM", "Thiếu dữ liệu cần thiết trong notification")
+            return
         }
-        if (notificationType == "OrderStatusChanged") {
-            val buyerUid = remoteMessage.data["buyerUid"]
-            val sellerUid = remoteMessage.data["sellerUid"]
-            val orderId = remoteMessage.data["orderId"]
-            val notificationTitle = remoteMessage.data["notificationTitle"]
-            val notificationDescription = remoteMessage.data["notificationMessage"]
-            if (firebaseUser != null && firebaseAuth.uid == buyerUid) {
-                //user is signed in and is same user to which notification is sent
-                showNotification(
-                    orderId,
-                    sellerUid,
-                    buyerUid,
-                    notificationTitle,
-                    notificationDescription,
-                    notificationType
-                )
+
+        when (notificationType) {
+            "NewOrder" -> {
+                if (currentUid == sellerUid) {
+                    val intent = Intent(this, OrderDetailsSellerActivity::class.java).apply {
+                        putExtra("orderId", orderId)
+                        putExtra("orderBy", buyerUid)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                    showNotification(title, message, intent)
+                }
             }
+
+            "OrderStatusChanged" -> {
+                if (currentUid == buyerUid) {
+                    val intent = Intent(this, OrderDetailsUsersActivity::class.java).apply {
+                        putExtra("orderId", orderId)
+                        putExtra("orderTo", sellerUid)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                    showNotification(title, message, intent)
+                }
+            }
+
+            else -> Log.d("FCM", "Loại thông báo không xác định: $notificationType")
         }
     }
 
-    private fun showNotification(
-        orderId: String?,
-        sellerUid: String?,
-        buyerUid: String?,
-        notificationTitle: String?,
-        notificationDescription: String?,
-        notificationType: String
-    ) {
-        //notification
+
+    private fun showNotification(title: String, message: String, intent: Intent) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationId = Random().nextInt(3000)
 
-        //id for notification, random
-        val notificationID = Random().nextInt(3000)
-
-        //check if android version is Oreo/O or above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            setupNotificationChannel(notificationManager)
+            createNotificationChannel(notificationManager)
         }
 
-        //handle notification click, start order activity
-        var intent: Intent? = null
-        if (notificationType == "NewOrder") {
-            //open OrderDetailsSellerActivity
-            intent = Intent(this, OrderDetailsSellerActivity::class.java)
-            intent.putExtra("orderId", orderId)
-            intent.putExtra("orderBy", buyerUid)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        } else if (notificationType == "OrderStatusChanged") {
-            //open OrderDetailsUsersActivity
-            intent = Intent(this, OrderDetailsUsersActivity::class.java)
-            intent.putExtra("orderId", orderId)
-            intent.putExtra("orderTo", sellerUid)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        }
-        @SuppressLint("UnspecifiedImmutableFlag") val pendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            System.currentTimeMillis().toInt(), // tránh bị ghi đè khi nhiều noti
+            intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-        //Large icon
+
         val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.icon)
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        //sound of notification
-        val notificationSounUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-        notificationBuilder.setSmallIcon(R.drawable.icon)
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.icon)
             .setLargeIcon(largeIcon)
-            .setContentTitle(notificationTitle)
-            .setContentText(notificationDescription)
-            .setSound(notificationSounUri)
-            .setAutoCancel(true) //cancel/dismiss when clicked
-            .setContentIntent(pendingIntent) //add intent
+            .setContentTitle(title)
+            .setContentText(message)
+            .setAutoCancel(true)
+            .setSound(soundUri)
+            .setContentIntent(pendingIntent)
+            .setColor(Color.GREEN)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        //show notification
-        notificationManager.notify(notificationID, notificationBuilder.build())
+        notificationManager.notify(notificationId, builder.build())
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun setupNotificationChannel(notificationManager: NotificationManager?) {
-        val channelName: CharSequence = "Some Sample Text"
-        val channelDescription = "Channel Description here"
-        val notificationChannel = NotificationChannel(
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(manager: NotificationManager) {
+        val channelName = "Thông báo đơn hàng"
+        val channelDescription = "Thông báo về đơn hàng mới và trạng thái đơn hàng"
+        val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             channelName,
             NotificationManager.IMPORTANCE_HIGH
-        )
-        notificationChannel.description = channelDescription
-        notificationChannel.enableLights(true)
-        notificationChannel.lightColor = Color.RED
-        notificationChannel.enableVibration(true)
-        notificationManager?.createNotificationChannel(notificationChannel)
+        ).apply {
+            description = channelDescription
+            enableLights(true)
+            lightColor = Color.RED
+            enableVibration(true)
+        }
+        manager.createNotificationChannel(channel)
     }
 
-    override fun onNewToken(s: String) {
-        super.onNewToken(s)
-        Log.d("SERVICE_TAG", "onNewToken: ")
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        val uid = FirebaseAuth.getInstance().uid ?: return
+        val ref = FirebaseDatabase.getInstance().getReference("Users")
+        val update = hashMapOf<String, Any>("fcmToken" to token)
+        ref.child(uid).updateChildren(update)
+        Log.d("FCM", "New FCM token: $token")
     }
 
     companion object {
-        private const val NOTIFICATION_CHANNEL_ID =
-            "MY_NOTIFICATION_CHANNEL_ID" //required for android O and above
+        private const val NOTIFICATION_CHANNEL_ID = "ORDER_NOTIFICATION_CHANNEL"
     }
 }

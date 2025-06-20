@@ -2,14 +2,20 @@ package com.example.grocery.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.grocery.adapters.AdapterOrderUser
 import com.example.grocery.adapters.AdapterShop
@@ -62,6 +68,21 @@ class MainUserActivity : AppCompatActivity() {
         progressDialog!!.setTitle("Vui lòng đợi")
         progressDialog!!.setCanceledOnTouchOutside(false)
         firebaseAuth = FirebaseAuth.getInstance()
+
+
+
+        // 👉 Xin quyền thông báo nếu Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
         checkUser()
         dataIntent // xử lý sự kiện truyền intent số điện thoại vào đây.
         //at start show shops ui
@@ -102,7 +123,7 @@ class MainUserActivity : AppCompatActivity() {
             showOrdersUI()
         })
 
-        //start settings screen
+//        //start settings screen
         settingsBtn.setOnClickListener { view: View? ->
             startActivity(
                 Intent(
@@ -111,6 +132,8 @@ class MainUserActivity : AppCompatActivity() {
                 )
             )
         }
+
+
     }
 
     private val dataIntent: Unit
@@ -208,39 +231,40 @@ class MainUserActivity : AppCompatActivity() {
     }
 
     private fun loadOrders() {
-        //init order list
         ordersList = ArrayList()
 
-        //get orders
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 ordersList!!.clear()
-                for (ds in dataSnapshot.children) {
-                    val uid = "" + ds.ref.key
-                    val ref = FirebaseDatabase.getInstance().getReference("Users").child(uid)
-                        .child("Orders")
-                    ref.orderByChild("orderBy").equalTo(firebaseAuth!!.uid)
-                        .addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    for (ds in dataSnapshot.children) {
-                                        val modelOrderUser = ds.getValue(
-                                            ModelOrderUser::class.java
-                                        )
 
-                                        //add to list
-                                        ordersList!!.add(modelOrderUser)
+                val tempList = ArrayList<ModelOrderUser>()
+
+                for (ds in dataSnapshot.children) {
+                    val uid = ds.key ?: continue
+                    val ordersRef = FirebaseDatabase.getInstance().getReference("Users")
+                        .child(uid)
+                        .child("Orders")
+
+                    ordersRef.orderByChild("orderBy").equalTo(firebaseAuth!!.uid)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                for (orderSnap in snapshot.children) {
+                                    val model = orderSnap.getValue(ModelOrderUser::class.java)
+                                    if (model != null) {
+                                        tempList.add(model)
                                     }
-                                    //setup adapter
-                                    adapterOrderUser =
-                                        AdapterOrderUser(this@MainUserActivity, ordersList)
-                                    //set to recyclerview
-                                    ordersRv!!.adapter = adapterOrderUser
                                 }
+
+                                // Sau khi duyệt hết tất cả user -> mới gán lại adapter nếu chưa có
+                                ordersList!!.clear()
+                                ordersList!!.addAll(tempList)
+                                adapterOrderUser =
+                                    AdapterOrderUser(this@MainUserActivity, ordersList!!)
+                                ordersRv!!.adapter = adapterOrderUser
                             }
 
-                            override fun onCancelled(databaseError: DatabaseError) {}
+                            override fun onCancelled(error: DatabaseError) {}
                         })
                 }
             }
@@ -248,6 +272,7 @@ class MainUserActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+
 
     private fun loadShops(myCity: String) {
         //init list

@@ -22,8 +22,8 @@
             android:layout_alignParentEnd="true"
             android:background="@null"/>
 
-
         <!--Settings Button-->
+
         <ImageButton
             android:id="@+id/settingsBtn"
             android:layout_width="30dp"

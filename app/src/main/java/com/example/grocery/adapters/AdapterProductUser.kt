@@ -20,7 +20,7 @@ import com.example.grocery.adapters.AdapterProductUser.HolderProductUser
 import com.example.grocery.filter.FilterProductUser
 import com.example.grocery.models.ModelProduct
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.squareup.picasso.Picasso
 import p32929.androideasysql_library.Column
 import p32929.androideasysql_library.EasyDB

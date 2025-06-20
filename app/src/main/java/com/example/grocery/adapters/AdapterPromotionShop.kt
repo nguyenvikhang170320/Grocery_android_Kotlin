@@ -17,7 +17,7 @@ import com.example.grocery.activities.AddPromotionCodeActivity
 import com.example.grocery.adapters.AdapterPromotionShop.HolderPromotionShop
 import com.example.grocery.models.ModelPromotion
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.util.Objects

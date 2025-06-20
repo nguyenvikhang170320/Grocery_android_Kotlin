@@ -1,10 +1,9 @@
-package com.example.grocery.activities
+package com.example.grocery.thumucquantrong
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.Locale
-import android.util.Log // Import Log để sử dụng trong hàm parse
 
 object CurrencyFormatter {
 

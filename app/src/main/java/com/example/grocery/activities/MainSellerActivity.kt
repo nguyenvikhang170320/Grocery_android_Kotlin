@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +21,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.grocery.adapters.AdapterOrderShop
 import com.example.grocery.adapters.AdapterProductSeller
@@ -80,6 +84,19 @@ class MainSellerActivity : AppCompatActivity() {
         progressDialog!!.setTitle("Please wait")
         progressDialog!!.setCanceledOnTouchOutside(false)
         firebaseAuth = FirebaseAuth.getInstance()
+
+        // 👉 Xin quyền thông báo nếu Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
         checkUser()
         loadAllProducts()
         loadAllOrders()
@@ -176,6 +193,7 @@ class MainSellerActivity : AppCompatActivity() {
         popupMenu.menu.add("Cài đặt")
         popupMenu.menu.add("Đánh giá")
         popupMenu.menu.add("Khuyến mãi")
+        popupMenu.menu.add("Doanh thu")
         //handle menu item click
         popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
             if (menuItem.title === "Cài đặt") {
@@ -189,6 +207,10 @@ class MainSellerActivity : AppCompatActivity() {
             } else if (menuItem.title === "Khuyến mãi") {
                 //start promotions list screen
                 startActivity(Intent(this@MainSellerActivity, PromotionCodesActivity::class.java))
+            }
+            else if (menuItem.title === "Doanh thu") {
+                //start promotions list screen
+                startActivity(Intent(this@MainSellerActivity, DoanhThuSellerActivity::class.java))
             }
             true
         }

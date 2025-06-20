@@ -25,11 +25,4 @@ class ModelCartItem {
         this.quantity = quantity
     }
 
-    fun getpId(): String? {
-        return pId
-    }
-
-    fun setpId(pId: String?) {
-        this.pId = pId
-    }
 }

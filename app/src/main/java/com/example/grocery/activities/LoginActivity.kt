@@ -136,17 +136,28 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkUserType() {
-        //if user is seller, start seller main screen
-        //if user is buyer, start user main screen
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.orderByChild("uid").equalTo(firebaseAuth!!.uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (ds in dataSnapshot.children) {
                         val accountType = "" + ds.child("accountType").value
+                        val userId = firebaseAuth!!.uid!!
+
+                        // ✅ Lấy token FCM
+                        com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val token = task.result
+                                    // ✅ Lưu vào Firebase
+                                    val update = HashMap<String, Any>()
+                                    update["fcmToken"] = token
+                                    ref.child(userId).updateChildren(update)
+                                }
+                            }
+
+                        progressDialog!!.dismiss()
                         if (accountType == "Seller") {
-                            progressDialog!!.dismiss()
-                            //user is seller
                             Toast.makeText(
                                 this@LoginActivity,
                                 "Đăng nhập tài khoản người bán",
@@ -158,22 +169,25 @@ class LoginActivity : AppCompatActivity() {
                                     MainSellerActivity::class.java
                                 )
                             )
-                            finish()
                         } else {
-                            progressDialog!!.dismiss()
-                            //user is buyer
                             Toast.makeText(
                                 this@LoginActivity,
                                 "Đăng nhập tài khoản người mua",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            startActivity(Intent(this@LoginActivity, MainUserActivity::class.java))
-                            finish()
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    MainUserActivity::class.java
+                                )
+                            )
                         }
+                        finish()
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
     }
+
 }

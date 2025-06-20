@@ -1,8 +1,8 @@
 package com.example.grocery.thumucquantrong
 
 object Constants {
-    const val FCM_KEY =
-        "AAAA9xV4t7Y:APA91bFh-pZ0yrLPu1BXU8NBwECFdSSvRTA51xgiB75FdZ1hh2Cmrxt_l-ND2oLmrefa6BFSV8myIhtIxqIdI9XOJYsk-Kg--u9Ty1e4rgANfWzEna-SdVaj9sIKSNyoaqJ5SNjFNMA8"
+//    const val FCM_KEY =
+//        "cSrDtQ7eRFuc3KOJOE7g-H:APA91bFrymKfXglTxtfRbPot9DUoecw_9aqBANy3EabwgOFas-9ogUgdxUAK1fp03oqRlGxi0yxbI98FcRRsha6OTn64AZu2RQtdKpjsmXZFirHFtlx8Zf4"
     const val FCM_TOPIC = "PUSH_NOTIFICATIONS"
 
     //product categories

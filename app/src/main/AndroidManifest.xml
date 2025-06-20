@@ -29,6 +29,7 @@
         android:usesCleartextTraffic="true">
 
         <activity android:name="com.example.grocery.activities.AddPromotionCodeActivity" />
+        <activity android:name="com.example.grocery.activities.DoanhThuSellerActivity" />
         <activity android:name="com.example.grocery.activities.PromotionCodesActivity" />
         <activity android:name="com.example.grocery.activities.SettingsActivity" />
         <activity android:name="com.example.grocery.activities.OrderDetailsSellerActivity" />

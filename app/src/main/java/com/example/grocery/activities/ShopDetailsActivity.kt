@@ -32,6 +32,7 @@ import com.example.grocery.models.ModelCartItem
 import com.example.grocery.models.ModelProduct
 import com.example.grocery.thumucquantrong.Constants
 import com.example.grocery.R
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -39,6 +40,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
+import org.json.JSONException
 import org.json.JSONObject
 import p32929.androideasysql_library.Column
 import p32929.androideasysql_library.EasyDB
@@ -639,7 +641,7 @@ class ShopDetailsActivity : AppCompatActivity() {
             .addOnSuccessListener { aVoid: Void? ->
                 //order info added now add order items
                 for (i in cartItemList!!.indices) {
-                    val pId = cartItemList!![i].getpId()
+                    val pId = cartItemList!![i].pId
                     val id = cartItemList!![i].id
                     val cost1 = cartItemList!![i].cost
                     val name = cartItemList!![i].name
@@ -778,67 +780,50 @@ class ShopDetailsActivity : AppCompatActivity() {
     }
 
     private fun prepareNotificationMessage(orderId: String) {
-        //When user places order, send notification to seller
+        val url = "http://172.16.1.61:3000/notify-seller" // 🔁 Thay bằng IP/server thật của bạn
 
-        //prepare data for notification
-        val NOTIFICATION_TOPIC =
-            "/topics/" + Constants.FCM_TOPIC //must be same as subscribed by user
-        val NOTIFICATION_TITLE = "New Order $orderId"
-        val NOTIFICATION_MESSAGE = "Congratulations...! You have new order."
-        val NOTIFICATION_TYPE = "NewOrder"
-
-        //prepare json (what to send and where to send)
-        val notificationJo = JSONObject()
-        val notificationBodyJo = JSONObject()
+        val requestBody = JSONObject()
+        Log.d("NOTIFICATION", "Gửi notification : $requestBody")
         try {
-            //what to send
-            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE)
-            notificationBodyJo.put(
-                "buyerUid",
-                firebaseAuth!!.uid
-            ) //since we are logged in as buyer to place order so current user uid is buyer uid
-            notificationBodyJo.put("sellerUid", shopUid)
-            notificationBodyJo.put("orderId", orderId)
-            notificationBodyJo.put("notificationTitle", NOTIFICATION_TITLE)
-            notificationBodyJo.put("notificationMessage", NOTIFICATION_MESSAGE)
-            //where to send
-            notificationJo.put("to", NOTIFICATION_TOPIC) //to all who subscribed to this topic
-            notificationJo.put("data", notificationBodyJo)
-        } catch (e: Exception) {
-            Toast.makeText(this, "" + e.message, Toast.LENGTH_SHORT).show()
+            requestBody.put("buyerUid", firebaseAuth!!.uid)
+            requestBody.put("sellerUid", shopUid)
+            requestBody.put("orderId", orderId)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Lỗi tạo dữ liệu gửi notification", Toast.LENGTH_SHORT).show()
+            return
         }
-        sendFcmNotification(notificationJo, orderId)
-    }
 
-    private fun sendFcmNotification(notificationJo: JSONObject, orderId: String) {
-        //send volley request
-        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest(
-            "https://fcm.googleapis.com/fcm/send",
-            notificationJo,
-            Response.Listener { //after sending fcm start order details activity
+        val jsonObjectRequest = object : JsonObjectRequest(
+            Method.POST, url, requestBody,
+            Response.Listener { response ->
+                Log.d("NOTIFICATION", "Gửi notification thành công: $response")
+
+                // Chuyển sang màn hình chi tiết đơn hàng
                 val intent = Intent(this@ShopDetailsActivity, OrderDetailsUsersActivity::class.java)
                 intent.putExtra("orderTo", shopUid)
                 intent.putExtra("orderId", orderId)
                 startActivity(intent)
             },
-            Response.ErrorListener { error: VolleyError? ->
-                //if failed sending fcm, still start order details activity
+            Response.ErrorListener { error ->
+                Log.e("NOTIFICATION", "Lỗi gửi notification: ${error.message}")
+                Toast.makeText(this, "Lỗi gửi thông báo", Toast.LENGTH_SHORT).show()
+
+                // Vẫn chuyển sang OrderDetails
                 val intent = Intent(this@ShopDetailsActivity, OrderDetailsUsersActivity::class.java)
                 intent.putExtra("orderTo", shopUid)
                 intent.putExtra("orderId", orderId)
                 startActivity(intent)
-            }) {
-            override fun getHeaders(): Map<String, String> {
-
-                //put required headers
-                val headers: MutableMap<String, String> = HashMap()
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
                 headers["Content-Type"] = "application/json"
-                headers["Authorization"] = "key=" + Constants.FCM_KEY
                 return headers
             }
         }
 
-        //enque the volley request
         Volley.newRequestQueue(this).add(jsonObjectRequest)
     }
+
 }

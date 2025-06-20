@@ -13,7 +13,7 @@ import com.example.grocery.activities.OrderDetailsUsersActivity
 import com.example.grocery.adapters.AdapterOrderUser.HolderOrderUser
 import com.example.grocery.models.ModelOrderUser
 import com.example.grocery.R
-import com.example.grocery.activities.CurrencyFormatter
+import com.example.grocery.thumucquantrong.CurrencyFormatter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
